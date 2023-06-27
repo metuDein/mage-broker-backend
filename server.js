@@ -49,7 +49,7 @@ app.use('/getallassets', require('./routes/frontend/getAllAssets'));
 app.use('/getallcartitems', require('./routes/frontend/getAllcartItems'));
 app.use('/getallusers', require('./routes/frontend/getAllUsers'));
 app.use('/getallmessages', require('./routes/frontend/getAllMessages'));
-app.use('/getallmessages', require('./routes/frontend/getAllMessages66'));
+app.use('/getallmessages', require('./routes/frontend/getAllMessages'));
 app.use('/', require('./routes/root'));
 
 
