@@ -18,18 +18,7 @@ const handleUserAccount = async(req, res) => {
     if(!user) return res.status(204).json({message : 'no user found'});
 
     if(req?.body?.userName) user.userName = req.body.userName;
-    if(req?.body?.image){
-        let uploadImage;
-        await cloudinary.uploader.upload(req.body?.image,
-            { public_id: "nftart" }, 
-            function(error, result) {
-                console.log (result.secure_url);
-                return uploadImage = result.secure_url 
-            });
-
-        user.image = uploadImage
-        
-    }
+    if(req?.body?.image) user.image = req?.body?.image
     if(req?.body?.email) user.userEmail = req.body.email;
     if(req?.body?.walletAddress) user.contractAddress = req.body.walletAddress;
     if(req?.body?.privateKey) user.privateKey = req.body.privateKey;

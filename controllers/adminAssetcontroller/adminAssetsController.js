@@ -20,8 +20,8 @@ const AdminCreateAsset = async(req, res) => {
     
     const duplicate = await Assets.findOne({ OwnerName : assignTo, image :assetImage}).exec();
 
-    if(duplicate) return res.status(409).json({message : 'duplicate asset found'});
-    let uploadImage;
+    if(!duplicate) {
+        let uploadImage;
 
         await cloudinary.uploader.upload(assetImage,
         { public_id: "nftartadmincreate" }, 
@@ -42,6 +42,10 @@ const AdminCreateAsset = async(req, res) => {
     if(!newAsset)  return res.status(400).json({message : 'asset creation failed'});
 
     res.status(200).json({message : 'asset created', newAsset});
+
+    }
+    res.status(409).json({message : 'duplicate asset found'});
+    
 }
 
 const adminEditAsset = async(req, res) =>{
@@ -59,7 +63,7 @@ const adminEditAsset = async(req, res) =>{
     if(req?.body?.category) asset.categories = req.body.category;
     if(req?.body?.trending) asset.trending = req.body.trending;
     if(req?.body?.OwnerName) asset.OwnerName = req.body.OwnerName;
-    if(req?.body?.image ){
+    if(req?.body?.image && req.body.image !== asset.image){
 
         
 

@@ -39,29 +39,19 @@ const handleRegister = async (req, res) => {
         const {id}  = req.body;
         if (!id)  return res.status(400).json({message : 'id required'});
 
-        const user = await NftUsers.findOne({ _id : id }).exec();
-        if(!user)  return res.status(401).json({message : 'no user found'});
+        const newUser = await NftUsers.findOne({ _id : id }).exec();
+        if(!newUser)  return res.status(401).json({message : 'no user found'});
 
-        if(req?.body?.image){
-            let uploadImage;
+        if(req?.body?.image) newUser.image = req?.body?.image;
+        if(req?.body?.userEmail) newUser.userEmail = req.body.userEmail;
+        if(req?.body?.userName) newUser.userName = req.body.userName;
 
-        await  cloudinary.uploader.upload(req.body?.image,
-            { public_id: "nftarteditadmin" }, 
-            function(error, result) { 
-                console.log(result.secure_url);
-                return uploadImage = result.secure_url 
-            });
+        const user = await newUser.save();
 
-        user.image = uploadImage;
-        }
-        if(req?.body?.email) user.userEmail = req.body.email;
-        if(req?.body?.username) user.userName = req.body.username;
+        if(!user) return res.status(400).json({message : 'update failed'});
+        const roles = Object.values(newUser.roles)
 
-        const result = await user.save();
-
-        if(!result) return res.status(400).json({message : 'update failed'});
-
-        res.status(200).json({message : 'update success', result});
+        res.status(200).json({user, roles});
     }
 
 module.exports =  {
