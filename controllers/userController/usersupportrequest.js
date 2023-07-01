@@ -11,7 +11,7 @@ cloudinary.config({
 const newRequest = async(req, res) => {
     const {  title, body, senderAddress, sendername} = req.body;
 
-    if( !title || !body || !senderAddress || !sendername) return res.status(400).json({message : 'all fields required'});
+    if( !title || !body  || !sendername) return res.status(400).json({message : 'all fields required'});
 
     const admin = NftUsers.find({ 'roles.Admin' : 5150 });
 

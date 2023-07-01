@@ -32,8 +32,9 @@ const createNewAsset = async (req, res) => {
 
         res.status(201).json({message : 'item creation successful', result});
 
+    }else{
+        res.status(409).json({message : 'duplicate item created'});
     }
-    res.status(409).json({message : 'duplicate item created'});
 
 }
 
