@@ -24,16 +24,31 @@ const createNewAsset = async (req, res) => {
     const duplicateAsset = await Assets.findOne({ image : image }).exec();
     
     if(!duplicateAsset){
+
+      const uniqueID = Date.now()
+    
+        let uploadImg;
+    
+        await cloudinary.uploader.upload(image,
+            { public_id: uniqueID },
+            function (error, result) { 
+                console.log(result.url);
+                uploadImg  = result.url
+                console.log(uploadImg);
+    
+              if(!uploadImg) return res.status(400).json({message : "image upload failed"})
+    
+            });
     
 
-        const result = await Assets.create({image : image, name : name, price : price, description : desc, block_number_minted : supply, blockChain : blockchain, categories : category, OwnerName : ownername });
+        const result = await Assets.create({image : uploadImg, name : name, price : price, description : desc, block_number_minted : supply, blockChain : blockchain, categories : category, OwnerName : ownername });
 
         if(!result) return res.status(400).json({message : 'item creation failed'});
 
         res.status(201).json({message : 'item creation successful', result});
 
     }else{
-        res.status(409).json({message : 'duplicate item created'});
+      return res.status(409).json({message : 'duplicate item created'});
     }
 
 }
@@ -47,7 +62,25 @@ const editAsset = async (req, res) => {
 
     if (!asset) return res.status(204).json({message : 'no asset found'});
 
-    if (req.body?.image) asset.image = req?.body?.image     
+    if (req.body?.image){
+      const uniqueID = Date.now()
+
+      let uploadImg;
+  
+      await cloudinary.uploader.upload(req?.body?.image,
+          { public_id: uniqueID },
+          function (error, result) { 
+              console.log(result.url);
+              uploadImg  = result.url
+              console.log(uploadImg);
+  
+            if(!uploadImg) return res.status(400).json({message : "image upload failed"})
+  
+          });
+
+
+      asset.image =  uploadImg;   
+  }    
     if (req.body?.name) asset.name = req.body.name
     if (req.body?.price) asset.price = req.body.price
     if (req.body?.desc) asset.description = req.body.desc

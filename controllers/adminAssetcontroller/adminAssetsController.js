@@ -21,20 +21,25 @@ const AdminCreateAsset = async(req, res) => {
     const duplicate = await Assets.findOne({ OwnerName : assignTo, image :assetImage}).exec();
 
     if(!duplicate) {
-        let uploadImage;
-
-        await cloudinary.uploader.upload(assetImage,
-        { public_id: "nftartadmincreate" }, 
-        function(error, result) { 
-            console.log(result.secure_url);
-            return uploadImage = result.secure_url;
-        });
+        const uniqueID = Date.now()
     
-        if(!uploadImage) return res.status(400).json({message : 'image upload failed'});
+        let uploadImg;
+    
+        await cloudinary.uploader.upload(image,
+            { public_id: uniqueID },
+            function (error, result) { 
+                console.log(result.url);
+                uploadImg  = result.url
+                console.log(uploadImg);
+    
+              if(!uploadImg) return res.status(400).json({message : "image upload failed"})
+    
+            });
 
 
 
-    const newAsset = await Assets.create({ name : assetName, image : uploadImage, OwnerName : owner.userName, price : assetPrice, block_number_minted : assetQuantity, blockChain :assetNetwork, description : description, categories : assetCategory });
+
+    const newAsset = await Assets.create({ name : assetName, image : uploadImg, OwnerName : owner.userName, price : assetPrice, block_number_minted : assetQuantity, blockChain :assetNetwork, description : description, categories : assetCategory });
 
     
 
@@ -63,23 +68,25 @@ const adminEditAsset = async(req, res) =>{
     if(req?.body?.category) asset.categories = req.body.category;
     if(req?.body?.trending) asset.trending = req.body.trending;
     if(req?.body?.OwnerName) asset.OwnerName = req.body.OwnerName;
-    if(req?.body?.image && req.body.image !== asset.image){
-
+    if(req?.body?.image ) {
         
+        const uniqueID = Date.now()
 
-        let uploadImage;
-
-        await  cloudinary.uploader.upload(req.body?.image,
-            { public_id: "nftarteditadmin" }, 
-            function(error, result) { 
-                console.log(result.secure_url);
-                return uploadImage = result.secure_url 
+        let uploadImg;
+    
+        await cloudinary.uploader.upload(req?.body?.image,
+            { public_id: uniqueID },
+            function (error, result) { 
+                console.log(result.url);
+                uploadImg  = result.url
+                console.log(uploadImg);
+    
+              if(!uploadImg) return res.status(400).json({message : "image upload failed"})
+    
             });
 
-        asset.image = uploadImage
-    
-    }
-
+        asset.image = uploadImg;
+    } 
 
  
     const result = await asset.save();
