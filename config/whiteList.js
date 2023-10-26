@@ -4,7 +4,7 @@ const whiteList = [
     'http://app.tritonsprime.io',
     'https://app.tritonsprime.io',
     'http://www.app.tritonsprime.io/',
-    'https://tritonsprime.com/'
+    'https://tritonsprime.com/',
     'https://www.tritonsprime.com/'
 ]
 
