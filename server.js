@@ -19,11 +19,10 @@ connectDb();
 
 app.use(logger)
 
-
+app.use(credentials)
 
 app.use(cors(corsOptions))
 
-app.use(credentials)
 
 
 app.use(bodyParser.json({limit: '50mb', extended: true}));
@@ -36,8 +35,6 @@ app.use(express.json())
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')))
-
-
 
 
 
